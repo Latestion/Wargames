@@ -1,0 +1,8 @@
+name: Wargames
+version: ${project.version}
+main: me.latestion.wargames.Wargames
+api-version: 1.17
+authors: [ Latestion ]
+
+commands:
+  wargames:
