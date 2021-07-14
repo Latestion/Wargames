@@ -4,3 +4,8 @@ Teams:
   BLUE: "[Blue]"
   GREEN: "Green"
   YELLOW: "Yellow"
+
+Sounds:
+  Grace-Start: "grace.start"
+  War-Start: "war.start"
+  War-End: "war.end"

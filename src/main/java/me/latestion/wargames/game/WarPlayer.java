@@ -1,5 +1,6 @@
 package me.latestion.wargames.game;
 
+import me.latestion.wargames.Wargames;
 import me.latestion.wargames.game.enums.WarTeams;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -15,7 +16,7 @@ public class WarPlayer {
     private Team oldTeam;
     private WarTeams team;
 
-    public boolean acceptGame;
+    private boolean acceptGame;
 
     public WarPlayer(UUID player) {
         this.player = player;
@@ -23,7 +24,7 @@ public class WarPlayer {
 
     public WarPlayer(UUID player, boolean bol) {
         this.player = player;
-        this.acceptGame = bol;
+        setAcceptGame(bol);
     }
 
     public UUID getUUID() {
@@ -49,5 +50,18 @@ public class WarPlayer {
 
     public Player getPlayer() {
         return Bukkit.getPlayer(player);
+    }
+
+    public boolean isAcceptGame() {
+        return acceptGame;
+    }
+
+    public void setAcceptGame(boolean acceptGame) {
+        this.acceptGame = acceptGame;
+        if (acceptGame) {
+            Wargames.getInstance().getGame().setTempAccept(Wargames.getInstance().getGame().getTempAccept() + 1);
+        } else {
+            Wargames.getInstance().getGame().setTempAccept(Wargames.getInstance().getGame().getTempAccept() - 1);
+        }
     }
 }

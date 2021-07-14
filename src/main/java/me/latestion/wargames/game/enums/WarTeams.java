@@ -20,7 +20,6 @@ public enum WarTeams {
 
     WarTeams(String team, ChatColor color) {
         this.team = Objects.requireNonNull(Bukkit.getScoreboardManager()).getMainScoreboard().getTeam(team);
-        ;
         this.color = color;
     }
 

@@ -19,6 +19,7 @@ public final class Wargames extends JavaPlugin {
 
     public boolean descriptionCache = false;
     public boolean durationCache = false;
+    public boolean graceCache = false;
 
     @Override
     public void onEnable() {

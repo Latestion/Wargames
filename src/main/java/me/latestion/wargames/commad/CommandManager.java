@@ -59,6 +59,12 @@ public class CommandManager implements CommandExecutor {
                     return false;
                 }
 
+                if (args[1].equalsIgnoreCase("grace")) {
+                    plugin.graceCache = true;
+                    sender.sendMessage(ChatColor.WHITE + "Enter a custom grace duration.");
+                    return false;
+                }
+
                 if (args[1].equalsIgnoreCase("mode")) {
                     plugin.getGame().setMode(GameMode.valueOf(args[2].toUpperCase()));
                     return false;
@@ -131,14 +137,14 @@ public class CommandManager implements CommandExecutor {
                         }
                     }
                     if (plugin.getGame().playerList.containsKey(player.getUniqueId())) {
-                        plugin.getGame().playerList.get(player.getUniqueId()).acceptGame = true;
+                        plugin.getGame().playerList.get(player.getUniqueId()).setAcceptGame(true);
                         return false;
                     }
                     plugin.getGame().playerList.put(player.getUniqueId(), new WarPlayer(player.getUniqueId(), true));
                     player.sendMessage(ChatColor.GREEN + "Invitation accepted.");
                 } else {
                     if (plugin.getGame().playerList.containsKey(player.getUniqueId())) {
-                        plugin.getGame().playerList.get(player.getUniqueId()).acceptGame = false;
+                        plugin.getGame().playerList.get(player.getUniqueId()).setAcceptGame(false);
                         return false;
                     }
                     plugin.getGame().playerList.remove(player.getUniqueId());
@@ -194,6 +200,7 @@ public class CommandManager implements CommandExecutor {
                 plugin.getGame().playerList.put(player.getUniqueId(), new WarPlayer(player.getUniqueId()).setTeam(team));
                 sender.sendMessage(ChatColor.GREEN + player.getName() + "'s team set to " + args[2]);
             }
+
             if (args[0].equalsIgnoreCase("roster")) {
 
                 if (args.length == 1) return false;

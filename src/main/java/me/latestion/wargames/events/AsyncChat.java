@@ -34,5 +34,19 @@ public class AsyncChat implements Listener {
                 event.getPlayer().sendMessage(ChatColor.RED + "Input in not a integer.");
             }
         }
+        if (plugin.graceCache) {
+            try {
+                int time = Integer.parseInt(event.getMessage());
+                if (time == 0) {
+                    event.getPlayer().sendMessage(ChatColor.RED + "Grace period cannot be 0.");
+                    return;
+                }
+                plugin.graceCache = false;
+                plugin.getGame().setGraceDuration(time);
+                event.setCancelled(true);
+            } catch (Exception e) {
+                event.getPlayer().sendMessage(ChatColor.RED + "Input in not a integer.");
+            }
+        }
     }
 }

@@ -25,7 +25,8 @@ public class Wargame {
     private String description;
     private boolean teleportPlayers;
     private boolean bringBed = false;
-    private boolean graceOn = true;
+    private boolean graceOn = false;
+    private int graceDuration = 1;
 
     private final Player warMaster;
 
@@ -34,6 +35,8 @@ public class Wargame {
 
     public boolean invitationPeriod = false;
     public boolean inviteAll = true;
+
+    private int tempAccept = 0;
 
     public Wargame(Player player) {
         this.warMaster = player;
@@ -66,11 +69,11 @@ public class Wargame {
     }
 
     public void startGame() {
-        //if (getState() == GameState.ON) return;
+        if (getState() == GameState.ON) return;
         invitationPeriod = false;
         setState(GameState.ON);
         for (WarPlayer player : playerList.values()) {
-            if (!player.acceptGame || !player.getPlayer().isOnline()) {
+            if (!player.isAcceptGame() || !player.getPlayer().isOnline()) {
                 playerList.remove(player.getUUID());
                 continue;
             }
@@ -90,14 +93,16 @@ public class Wargame {
                 }
             }
         }
+        setGraceOn(true);
         for (WarPlayer player : playerList.values()) {
             if (getSize() == WarSize.FFA) player.setTeam(WarTeams.FFA);
             Player p = player.getPlayer();
             if (isTeleportPlayers()) p.teleport(getLocation());
             p.setGameMode(getMode());
             player.getTeam().getTeam().addEntry(p.getName());
+            p.sendTitle(ChatColor.GOLD + "Grace Period", ChatColor.YELLOW + "You have " + getGraceDuration() + " minute(s) to prepare! ");
+            getLocation().getWorld().playSound(getLocation(), Objects.requireNonNull(Wargames.getInstance().getConfig().getString("Sounds.Grace-Start")), 1, 1);
         }
-        setGraceOn(true);
         Bukkit.getScheduler().runTaskLater(Wargames.getInstance(), () -> {
             setGraceOn(false);
             Bukkit.broadcastMessage(ChatColor.BOLD + "" + ChatColor.RED + "Grace Period has ended.");
@@ -105,11 +110,13 @@ public class Wargame {
                 for (WarPlayer player : playerList.values()) {
                     if (player.getPlayer().isOnline()) {
                         player.getPlayer().teleport(teamSpawnLocation.get(player.getTeam()));
+                        player.getPlayer().sendTitle(ChatColor.DARK_RED + "Battle", ChatColor.RED + "Let the games begin!");
                     }
                 }
             }
+            Bukkit.broadcastMessage(ChatColor.BOLD + "" + ChatColor.GOLD + "Wargames begin.");
+            getLocation().getWorld().playSound(getLocation(), Objects.requireNonNull(Wargames.getInstance().getConfig().getString("Sounds.War-Start")), 1, 1);
         }, 1200);
-        Bukkit.broadcastMessage(ChatColor.BOLD + "" + ChatColor.GOLD + "Wargames begin.");
         Bukkit.getScheduler().runTaskLater(Wargames.getInstance(), this::stopGame, (long) getDuration() * 1200);
     }
 
@@ -120,6 +127,7 @@ public class Wargame {
             player.getPlayer().setGameMode(GameMode.SURVIVAL);
             player.getOldTeam().addEntry(player.getPlayer().getName());
         }
+        getLocation().getWorld().playSound(getLocation(), Objects.requireNonNull(Wargames.getInstance().getConfig().getString("Sounds.War-End")), 1, 1);
         Wargames.getInstance().setGame(null);
     }
 
@@ -213,5 +221,23 @@ public class Wargame {
 
     public void setGraceOn(boolean graceOn) {
         this.graceOn = graceOn;
+    }
+
+    public int getGraceDuration() {
+        return graceDuration;
+    }
+
+    public void setGraceDuration(int graceDuration) {
+        this.graceDuration = graceDuration;
+        prepareGame();
+    }
+
+    public int getTempAccept() {
+        return tempAccept;
+    }
+
+    public void setTempAccept(int tempAccept) {
+        this.tempAccept = tempAccept;
+        if (invitationPeriod) warMaster.sendMessage(ChatColor.LIGHT_PURPLE + "" + tempAccept + " players accepted.");
     }
 }

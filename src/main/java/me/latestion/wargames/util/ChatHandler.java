@@ -54,6 +54,8 @@ public class ChatHandler {
                                 .setHoverEvent("Click to invite selected players").getComponent()).getComponent(),
                 new MessageHandler(ChatColor.WHITE + "Duration: ").setHoverEvent(ChatColor.WHITE + "" + game.getDuration() + " Minutes")
                         .addExtra(new MessageHandler(ChatColor.YELLOW + "[Enter Time in Minutes]\n").setClickEvent("/wargames setup duration").getComponent()).getComponent(),
+                new MessageHandler(ChatColor.WHITE + "Grace Period: ").setHoverEvent(ChatColor.WHITE + "" + game.getGraceDuration() + " Minutes")
+                        .addExtra(new MessageHandler(ChatColor.YELLOW + "[Enter Time in Minutes\n").setClickEvent("/wargames setup grace").getComponent()).getComponent(),
                 new MessageHandler(ChatColor.WHITE + "Location: ").addLocToHover(game.getLocation())
                         .addExtra(new MessageHandler(ChatColor.GREEN + "[Click To Set] ")
                                 .setCustomEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/wargames setup location ")).getComponent())
